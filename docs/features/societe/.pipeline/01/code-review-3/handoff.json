@@ -1,0 +1,98 @@
+{
+  "bundle": "tmp/factory/review/ticket-societe-01.bundle.md",
+  "reviewers": [
+    {
+      "reviewer": "review-quality",
+      "files": 9,
+      "reviewed": 9
+    },
+    {
+      "reviewer": "review-security-bugs",
+      "files": 9,
+      "reviewed": 9
+    },
+    {
+      "reviewer": "review-tests",
+      "files": 9,
+      "reviewed": 9
+    }
+  ],
+  "findings": [
+    {
+      "severity": "major",
+      "category": "tests",
+      "file": "modern/src/app/(app)/admin/societe/page.test.tsx",
+      "line": 33,
+      "rule": null,
+      "finding": "`getCompanyOrDefaults` est remplacé par un faux qui renvoie GBP, donc le critère 8 (« la devise en base présélectionnée ») n'est jamais vérifié contre la base, et la branche `if (company) return company` de `company.ts:54` n'est atteinte par aucun scénario (`company.test.ts` ne teste que le cas sans ligne). Si `getCompanyOrDefaults` renvoyait toujours les valeurs par défaut, la page afficherait EUR et l'année en cours au lieu des valeurs enregistrées, et tous les tests resteraient verts.",
+      "fix": "Ajouter dans `company.test.ts` un scénario « renvoie la société en base quand la ligne existe » (`getCompanyOrDefaults()` égal à la ligne du seed, ou à une ligne modifiée en GBP avec `db.exec(\"UPDATE company ...\")`) ; idéalement, rendre la page sur la base de test au lieu de mocker `@/lib/company`.",
+      "reviewer": "review-tests"
+    },
+    {
+      "severity": "major",
+      "category": "tests",
+      "file": "modern/src/app/(app)/admin/societe/page.test.tsx",
+      "line": 35,
+      "rule": null,
+      "finding": "`saveCompanyAction` est remplacé par `vi.fn()` et aucun test ne l'exerce : la redirection sans session, la transmission de `session.uid` et la revalidation sur le seul cas de succès ne sont couvertes par aucun scénario. Si l'action appelait `submitCompany(formData, 1)` au lieu de `session.uid`, la ligne `audit_log` porterait le mauvais `user_id` pour tout utilisateur autre qu'admin, sans qu'aucun test ne passe au rouge.",
+      "fix": "Ajouter `actions.test.ts` : mocker `@/lib/auth`, `next/cache` et `next/navigation`, puis vérifier (1) sans session → `redirect(\"/login\")` et rien écrit, (2) session uid 7 + saisie valide → ligne d'audit `user_id: 7` en base et `revalidatePath` appelé pour `/admin/societe` et `/dashboard`, (3) saisie invalide → aucun `revalidatePath`.",
+      "reviewer": "review-tests"
+    },
+    {
+      "severity": "nit",
+      "category": "tests",
+      "file": "modern/src/app/(app)/admin/societe/page.test.tsx",
+      "line": 148,
+      "rule": null,
+      "finding": "Le test de la clé appelle `CompanyForm` comme une fonction et parcourt l'arbre React à la main (cast, `find` sur `props.children`) pour lire `key` : il est plus difficile à lire que le composant qu'il couvre et dépend de la structure exacte du JSX (le `<form>` enfant direct de la `div`).",
+      "fix": "Extraire la clé dans une fonction nommée testable (par ex. `formKey(values)`) ou se contenter des deux tests de rendu après soumission, qui vérifient déjà les valeurs affichées.",
+      "reviewer": "review-tests"
+    },
+    {
+      "severity": "major",
+      "category": "tests",
+      "file": "modern/src/lib/company.test.ts",
+      "line": 225,
+      "rule": null,
+      "finding": "Le test « affiche sur le tableau de bord l'exercice qui vient d'être enregistré » (critère 14) ne rend jamais le tableau de bord : il recopie l'expression de la page, `formatFiscalYear(getCompany())`, et ne passe ni par `saveCompanyAction` ni par `DashboardPage`. Si l'on retire `export const dynamic = \"force-dynamic\"` de `dashboard/page.tsx` et `revalidatePath(\"/dashboard\")` de `actions.ts`, le tableau de bord sert l'exercice prérendu, périmé, après un enregistrement, et ce test reste vert.",
+      "fix": "Couvrir le critère 14 au niveau page : dans `dashboard/page.test.tsx`, sans mocker `getCompany`, appeler `submitCompany` sur la base de test puis rendre `<DashboardPage />` et vérifier `01/01/2027 - 31/12/2027` ; garder ici seulement l'assertion de `formatFiscalYear`, sous un titre qui ne parle pas du tableau de bord.",
+      "reviewer": "review-tests"
+    },
+    {
+      "severity": "minor",
+      "category": "quality",
+      "file": "modern/src/lib/company.ts",
+      "line": 47,
+      "rule": null,
+      "finding": "Le cast `as Company | undefined` présente la ligne brute de la table comme une `Company` « validée » (doc ligne 19), alors que le schéma (`currency TEXT NOT NULL`, sans contrainte) accepte n'importe quelle devise. Si la ligne `company` contient `currency = 'JPY'`, `getCompany()` renvoie un `CurrencyCode` qui n'en est pas un ; `CompanyForm` reçoit `defaultValue=\"JPY\"`, aucune option ne correspond et le select affiche EUR en silence, sans que le type ne l'ait signalé.",
+      "fix": "Typer la lecture comme `CompanyInput | undefined` et ne produire une `Company` qu'après contrôle (`isCurrencyCode`), ou bien retirer la promesse « validée » du type renvoyé par `getCompany`.",
+      "reviewer": "review-quality"
+    },
+    {
+      "severity": "nit",
+      "category": "quality",
+      "file": "modern/src/lib/company.ts",
+      "line": 37,
+      "rule": null,
+      "finding": "`COMPANY_NAME` est exporté mais aucun autre fichier ne l'importe (pas plus que `CompanyValidation` et `CurrencyCode`, qui ne servent que dans ce module) : la surface publique du module est plus large qu'il n'en faut.",
+      "fix": "Retirer `export` de `COMPANY_NAME` (et des types qui ne servent qu'en interne).",
+      "reviewer": "review-quality"
+    },
+    {
+      "severity": "nit",
+      "category": "naming",
+      "file": "modern/src/lib/company.ts",
+      "line": 35,
+      "rule": null,
+      "finding": "Les deux branches de `CompanyValidation` portent `value` (la `Company` validée) et `values` (la `CompanyInput` brute) : deux noms qui ne diffèrent que d'un `s` pour deux concepts distincts, alors que le type porte déjà le nom précis de chacun.",
+      "fix": "Renommer en `company: Company` et `input: CompanyInput` (et `result` en `validation` dans `submitCompany`).",
+      "reviewer": "review-quality"
+    }
+  ],
+  "counts": {
+    "blocking": 0,
+    "major": 3,
+    "minor": 1,
+    "nit": 3
+  }
+}
