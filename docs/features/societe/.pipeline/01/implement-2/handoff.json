@@ -1,0 +1,114 @@
+{
+  "criteria": [
+    {
+      "criterion": "1. getCompany() renvoie la ligne id = 1 du seed : EUR, 2026-01-01, 2026-12-31",
+      "tests": [
+        "modern/src/lib/company.test.ts > getCompany > renvoie la ligne id = 1 du seed"
+      ]
+    },
+    {
+      "criterion": "2. Sans ligne company, getCompany() renvoie null et getCompanyOrDefaults() renvoie EUR, <année>-01-01, <année>-12-31",
+      "tests": [
+        "modern/src/lib/company.test.ts > getCompany > renvoie null sans ligne company, et getCompanyOrDefaults l'année en cours en EUR"
+      ]
+    },
+    {
+      "criterion": "3. validateCompany avec une date de début ou de fin vide → « Les dates de l'exercice sont obligatoires. »",
+      "tests": [
+        "modern/src/lib/company.test.ts > validateCompany > exige la date de début",
+        "modern/src/lib/company.test.ts > validateCompany > exige la date de fin, et cumule alors les deux messages dans l'ordre du legacy"
+      ]
+    },
+    {
+      "criterion": "4. validateCompany avec début = fin, et avec début > fin → « La date de fin doit être postérieure à la date de début. »",
+      "tests": [
+        "modern/src/lib/company.test.ts > validateCompany > refuse une date de fin égale à la date de début",
+        "modern/src/lib/company.test.ts > validateCompany > refuse une date de fin antérieure à la date de début"
+      ]
+    },
+    {
+      "criterion": "5. Plusieurs erreurs concaténées par un espace, dans l'ordre du Legacy",
+      "tests": [
+        "modern/src/lib/company.test.ts > validateCompany > exige la date de fin, et cumule alors les deux messages dans l'ordre du legacy"
+      ]
+    },
+    {
+      "criterion": "6. validateCompany refuse une devise hors EUR/USD/GBP/CHF et une date inexistante (2026-02-30)",
+      "tests": [
+        "modern/src/lib/company.test.ts > validateCompany > refuse une devise hors de la liste",
+        "modern/src/lib/company.test.ts > validateCompany > accepte la devise %s",
+        "modern/src/lib/company.test.ts > validateCompany > refuse une date qui n'existe pas"
+      ]
+    },
+    {
+      "criterion": "7. saveCompany met à jour sans changer name, crée avec name = 'Ketchup Compta', ajoute la ligne audit_log",
+      "tests": [
+        "modern/src/lib/company.test.ts > saveCompany > met à jour la ligne existante sans changer le nom, et trace l'opération",
+        "modern/src/lib/company.test.ts > saveCompany > crée la ligne avec le nom Ketchup Compta si elle manque"
+      ]
+    },
+    {
+      "criterion": "8. Page : titre, 4 devises avec présélection, champs date obligatoires pré-remplis, bouton Enregistrer",
+      "tests": [
+        "modern/src/app/(app)/admin/societe/page.test.tsx > page /admin/societe > affiche le titre, les 4 devises avec celle en base présélectionnée, les dates et le bouton"
+      ]
+    },
+    {
+      "criterion": "9. Enregistrement valide → « Paramètres de la société enregistrés. », nouvelles valeurs après rechargement",
+      "tests": [
+        "modern/src/lib/company.test.ts > submitCompany > enregistre une saisie valide et renvoie le message de succès du legacy"
+      ]
+    },
+    {
+      "criterion": "10. Enregistrement invalide → message du Legacy, saisie conservée, rien d'écrit dans company ni audit_log",
+      "tests": [
+        "modern/src/lib/company.test.ts > submitCompany > refuse une saisie invalide : message du legacy, saisie conservée, rien d'écrit"
+      ]
+    },
+    {
+      "criterion": "11. Non connecté, /admin/societe redirige vers /login",
+      "tests": [
+        "modern/src/app/(app)/admin/societe/page.test.tsx > accès aux pages connectées > redirige vers /login sans session",
+        "modern/src/app/(app)/admin/societe/page.test.tsx > accès aux pages connectées > affiche la page avec une session"
+      ]
+    },
+    {
+      "criterion": "12. Tableau de bord : bloc « Exercice » au format JJ/MM/AAAA - JJ/MM/AAAA",
+      "tests": [
+        "modern/src/lib/company.test.ts > formatFiscalYear > affiche l'exercice au format JJ/MM/AAAA - JJ/MM/AAAA",
+        "modern/src/app/(app)/dashboard/page.test.tsx > tableau de bord > affiche le bloc Exercice au format JJ/MM/AAAA - JJ/MM/AAAA"
+      ]
+    },
+    {
+      "criterion": "13. Sans ligne company, le bloc affiche « Non configuré »",
+      "tests": [
+        "modern/src/lib/company.test.ts > formatFiscalYear > affiche « Non configuré » sans société",
+        "modern/src/app/(app)/dashboard/page.test.tsx > tableau de bord > affiche « Non configuré » sans société"
+      ]
+    },
+    {
+      "criterion": "14. Après un enregistrement, le tableau de bord affiche les nouvelles dates",
+      "tests": [
+        "modern/src/lib/company.test.ts > submitCompany > enregistre une saisie valide et renvoie le message de succès du legacy"
+      ]
+    },
+    {
+      "criterion": "15. Le message d'accueil et le bouton « Commencer par « Société » » restent en place",
+      "tests": [
+        "modern/src/app/(app)/dashboard/page.test.tsx > tableau de bord > garde le message d'accueil et le bouton vers la page Société"
+      ]
+    },
+    {
+      "criterion": "16. npm run check passe dans modern/",
+      "tests": [
+        "npm --prefix modern run check"
+      ]
+    }
+  ],
+  "findingsFrom": null,
+  "verdicts": [],
+  "checks": {
+    "command": "npm --prefix modern run check",
+    "green": true
+  }
+}
