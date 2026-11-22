@@ -1,0 +1,69 @@
+---
+name: migration-plan
+description: Draft the migration plan of a legacy page with its open questions, have the dev answer them in Plannotator, and revise it until none is left.
+disable-model-invocation: true
+argument-hint: <feature> [legacy page or module]
+---
+
+The `migration-plan` step of the pipeline is interactive: it runs here, in the dev's own session, and the run picks it up once the plan is committed. Your job is a plan the dev agrees with, with every open decision settled by the dev, not by you.
+
+The argument is the feature's name, a short kebab-case slug such as `societe`, then optionally the legacy page or module it migrates. Without a page, find it from the name in `legacy/www/` and say which one you took.
+
+## 1. Read
+
+1. `{{harness.contextFile}}`, `CONTEXT.md` (use its terms, avoid the ones it lists under _Avoid_) and the ADRs in `docs/adr/` the page touches.
+2. The legacy page: its PHP under `legacy/www/` and every file it includes, the tables it reads and writes in `legacy/sql/`, and its tests in `legacy/tests/`. The legacy is the reference behaviour: read it, never change it.
+3. The target: `modern/README.md`, then the stub page this feature replaces under `modern/src/app/` and a page already migrated, if any, as the pattern to follow.
+
+## 2. Draft
+
+Write `{{paths.features}}/<feature>/migration-plan.md` in {{project.language}}, with these sections:
+
+- **Objectif**: what the page does for the user, in two or three sentences.
+- **Comportement legacy à garder**: each rule, field, validation, message and side effect, with the legacy file and line it comes from.
+- **Comportement legacy à abandonner**: what is not carried over, and why.
+- **Design cible**: the routes, the data access, the components and the server actions, following the patterns of `modern/README.md`.
+- **Lots de travail**: the parts of the work, in delivery order, each with acceptance criteria a test can check. The `tickets` step splits the feature from these.
+- **Décisions**: empty at first; each answered question lands here.
+
+Every decision the code and the docs leave open becomes a question block at the end of the plan, under **Questions ouvertes**, never a silent choice:
+
+```markdown
+:::question
+<the question, in one line>
+
+<what it changes for the user, and what the legacy does today, in one to three short sentences>
+
+- [ ] <option> — <why>
+- [ ] <option> — <why>
+
+Recommended: <option>
+:::
+```
+
+Use `:::question-multi` when several choices can hold together and `:::question-text` for a free answer. Ask what only the dev can decide: the behaviour to keep or drop, a trade-off the user sees, a rule the legacy leaves ambiguous. Do not ask what the code answers. Leave a blank line between the parts of a block.
+
+## 3. Review in Plannotator
+
+Open the plan for the dev with the `plannotator` tool: `{ "action": "annotate", "target": "{{paths.features}}/<feature>/migration-plan.md", "gate": true }`. Without the tool, run `plannotator annotate {{paths.features}}/<feature>/migration-plan.md --gate --json` in the background with a long timeout. Then end your turn and wait: the answers and annotations come back as a message.
+
+## 4. Revise
+
+- Each answered question: remove its block, write the decision in **Décisions** (the question, the answer, the dev's note if any), and update the sections it changes.
+- A skipped question stays, reworded if the dev's note says why it was unclear.
+- Each annotation: apply it, or say in your reply why not.
+- A new open decision the revision raises becomes a new question block.
+
+Then open the plan in Plannotator again. Repeat until the dev approves it and **Questions ouvertes** is empty; drop that section then.
+
+## 5. Hand over
+
+Commit the plan alone: `docs(<feature>): plan the migration`. The run starts from the base branch, `main`, so the plan must reach it before the run: ask the dev whether to push it, and through a pull request or straight to `main`.
+
+Then give the dev the command that starts the pipeline from the approved plan:
+
+```sh
+bernard run <feature> --upstream-done
+```
+
+The run records the step as done by a human and waits at its approval gate: the dev approves it in the viewer or with `bernard resume <feature> --approve`.
