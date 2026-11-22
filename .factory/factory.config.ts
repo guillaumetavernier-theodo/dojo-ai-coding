@@ -3,6 +3,7 @@ import { defineConfig } from '@theodo/bernard/config'
 // Every field is described in docs/overlay.md. The ones left out take the core's defaults.
 export default defineConfig({
   harness: 'claude-code',
+  defaultPipeline: 'page-migration',
   project: { name: 'Ketchup Compta', language: 'French' },
   paths: { features: 'docs/features', scratch: 'tmp/factory' },
   adapters: {
