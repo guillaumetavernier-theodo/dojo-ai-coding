@@ -1,0 +1,23 @@
+{
+  "factoryVersion": "0.1.1",
+  "harness": "claude-code",
+  "files": {
+    ".claude/agents/review-quality.md": "90631c5c106b0548c5c214ce0f9867c4409a5becf9b7af63c6f01981f5f3b013",
+    ".claude/agents/review-security-bugs.md": "95d576d079832c3ff2e16336718f69da8460e4733b2aa434a6b5bacac10dcb52",
+    ".claude/agents/review-tests.md": "f6f89414740741eb40c880ff246eb35ce0260d2f79ec6490646fb20517fef966",
+    ".claude/hooks/sync-factory.sh": "18059525329181d9d5f56913a8e044d62f737c95df514edc2c3bb8a2b17122d6",
+    ".claude/settings.json": "d87529feab84a19dda1d57c3cd415bd648e63b7cd05b86a700e5686d98b5dc92",
+    ".claude/skills/apply-review/SKILL.md": "40b9c15d2f9c2e10d8fb706829cd4173a3e26b549537797279fbada2dc8080e6",
+    ".claude/skills/code-review/scripts/build-bundle.mjs": "ba08719eb59b2bd854a16679c33b4829f5d84a253a4e84c6532f9bd2d85b2e86",
+    ".claude/skills/code-review/SKILL.md": "9b6d8b4719ef243dc56a0c93b8a639c65a81e08315765613d5fc6c4d55ac33d0",
+    ".claude/skills/implement/SKILL.md": "125fc959f8943bb55ffb7a78c633838daa5fbb42eafaf17893ea0edc0012ed63",
+    ".claude/skills/optimise/SKILL.md": "84671f5b1ab966f64eae0fe547f10e56da0ccccdcb4f207bcae182a4dbd6306a",
+    ".claude/skills/pull-request/ci-fixer.md": "64cf7f4b5802411b75a564e1677bbb1ef5bf98f9222e519a9f0376d2dc9f7323",
+    ".claude/skills/pull-request/feature-section.template.md": "59bad4fb37968ee2f22139a8a259fb30871f5fdf7d449288a112c58ff10fec29",
+    ".claude/skills/pull-request/SKILL.md": "771335a7669d593814ddfcdfa97e38c449e90fd16cab9e93652ff6a26a8aae1f",
+    ".claude/skills/tickets/SKILL.md": "de1cb703a2b92c00c11724d20b7d3476b8977394f43456caf43dd5ce93aa5699",
+    ".claude/skills/validate/SKILL.md": "a4da88affde64e45251170c46b7a4aa3028cafca92f7c35267aeb47a3aee10ca"
+  },
+  "overrides": {},
+  "defaultDelivery": "2a55e6688f5be8fb867076555d0f54802b27afe15b532952ffcf3ac20f4f3e6a"
+}
