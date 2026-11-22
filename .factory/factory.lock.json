@@ -11,6 +11,7 @@
     ".claude/skills/code-review/scripts/build-bundle.mjs": "ba08719eb59b2bd854a16679c33b4829f5d84a253a4e84c6532f9bd2d85b2e86",
     ".claude/skills/code-review/SKILL.md": "9b6d8b4719ef243dc56a0c93b8a639c65a81e08315765613d5fc6c4d55ac33d0",
     ".claude/skills/implement/SKILL.md": "125fc959f8943bb55ffb7a78c633838daa5fbb42eafaf17893ea0edc0012ed63",
+    ".claude/skills/migration-plan/SKILL.md": "286caaa622961b9d72c08328f977288e0ac931943ab2063c9c78726624520147",
     ".claude/skills/optimise/SKILL.md": "84671f5b1ab966f64eae0fe547f10e56da0ccccdcb4f207bcae182a4dbd6306a",
     ".claude/skills/pull-request/ci-fixer.md": "64cf7f4b5802411b75a564e1677bbb1ef5bf98f9222e519a9f0376d2dc9f7323",
     ".claude/skills/pull-request/feature-section.template.md": "59bad4fb37968ee2f22139a8a259fb30871f5fdf7d449288a112c58ff10fec29",
