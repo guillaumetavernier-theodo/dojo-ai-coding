@@ -1,0 +1,190 @@
+{
+  "checks": {
+    "command": "npm --prefix modern run check",
+    "green": true
+  },
+  "criteria": [
+    {
+      "criterion": "1. getCompany() renvoie la ligne id = 1 du seed (EUR, 2026-01-01, 2026-12-31)",
+      "tests": [
+        "modern/src/lib/company.test.ts > getCompany > renvoie la ligne id = 1 du seed"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "2. Sans ligne company, getCompany() null et getCompanyOrDefaults() EUR / année en cours",
+      "tests": [
+        "modern/src/lib/company.test.ts > getCompany > renvoie null sans ligne company, et getCompanyOrDefaults l'année en cours en EUR"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "3. Date de début ou de fin vide → « Les dates de l'exercice sont obligatoires. »",
+      "tests": [
+        "company.test.ts > validateCompany > exige la date de début",
+        "company.test.ts > validateCompany > exige la date de fin, et cumule alors les deux messages dans l'ordre du legacy"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "4. Début = fin et début > fin → « La date de fin doit être postérieure à la date de début. »",
+      "tests": [
+        "company.test.ts > validateCompany > refuse une date de fin égale à la date de début",
+        "company.test.ts > validateCompany > refuse une date de fin antérieure à la date de début"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "5. Erreurs concaténées par un espace dans l'ordre du Legacy",
+      "tests": [
+        "company.test.ts > validateCompany > exige la date de fin, et cumule alors les deux messages dans l'ordre du legacy",
+        "company.test.ts > submitCompany > concatène plusieurs erreurs par un espace, dans l'ordre du legacy, sans rien écrire"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "6. Devise hors liste et date inexistante (2026-02-30) refusées",
+      "tests": [
+        "company.test.ts > validateCompany > refuse une devise hors de la liste",
+        "company.test.ts > validateCompany > accepte la devise %s",
+        "company.test.ts > validateCompany > refuse une date qui n'existe pas"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "7. saveCompany : update sans toucher name, création avec 'Ketchup Compta', ligne audit_log",
+      "tests": [
+        "company.test.ts > saveCompany > met à jour la ligne existante sans changer le nom, et trace l'opération",
+        "company.test.ts > saveCompany > crée la ligne avec le nom Ketchup Compta si elle manque"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "8. Page : titre, 4 devises avec présélection, dates obligatoires pré-remplies, bouton Enregistrer",
+      "tests": [
+        "modern/src/app/(app)/admin/societe/page.test.tsx > page /admin/societe > affiche le titre, les 4 devises avec celle en base présélectionnée, les dates et le bouton"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "9. Enregistrement valide : message de succès, nouvelles valeurs après rechargement",
+      "tests": [
+        "company.test.ts > submitCompany > enregistre une saisie valide et renvoie le message de succès du legacy"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "10. Enregistrement invalide : message Legacy, saisie conservée, rien d'écrit",
+      "tests": [
+        "company.test.ts > submitCompany > refuse une saisie invalide : message du legacy, saisie conservée, rien d'écrit",
+        "company.test.ts > submitCompany > concatène plusieurs erreurs par un espace, dans l'ordre du legacy, sans rien écrire"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "11. Non connecté, /admin/societe redirige vers /login",
+      "tests": [
+        "page.test.tsx > accès aux pages connectées > redirige vers /login sans session",
+        "page.test.tsx > accès aux pages connectées > affiche la page avec une session"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "12. Bloc « Exercice » au format JJ/MM/AAAA - JJ/MM/AAAA",
+      "tests": [
+        "modern/src/app/(app)/dashboard/page.test.tsx > tableau de bord > affiche le bloc Exercice au format JJ/MM/AAAA - JJ/MM/AAAA",
+        "company.test.ts > formatFiscalYear > affiche l'exercice au format JJ/MM/AAAA - JJ/MM/AAAA"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "13. Sans ligne company, « Non configuré »",
+      "tests": [
+        "dashboard/page.test.tsx > tableau de bord > affiche « Non configuré » sans société",
+        "company.test.ts > formatFiscalYear > affiche « Non configuré » sans société"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "14. Après enregistrement, le tableau de bord affiche les nouvelles dates",
+      "tests": [
+        "company.test.ts > submitCompany > enregistre une saisie valide et renvoie le message de succès du legacy (formatFiscalYear(getCompany()) après enregistrement ; dashboard en force-dynamic + revalidatePath)"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "15. Message d'accueil et bouton « Commencer par « Société » » conservés",
+      "tests": [
+        "dashboard/page.test.tsx > tableau de bord > garde le message d'accueil et le bouton vers la page Société"
+      ],
+      "holds": true
+    },
+    {
+      "criterion": "16. npm run check passe dans modern/",
+      "tests": [
+        "npm --prefix modern run check (biome, tsc, vitest : 4 fichiers, 29 tests verts)"
+      ],
+      "holds": true
+    }
+  ],
+  "legacy": [
+    {
+      "behaviour": "legacy/www/modules/setup/company.php § require_login (accès connecté sans rôle)",
+      "cases": [
+        "sans session → redirect /login (layout (app))",
+        "avec session → page rendue"
+      ],
+      "holds": true
+    },
+    {
+      "behaviour": "legacy/www/lib/utils.php § get_company + company.php:57-64 (valeurs par défaut)",
+      "cases": [
+        "ligne id=1 présente",
+        "table vide → EUR, AAAA-01-01, AAAA-12-31 de l'année en cours"
+      ],
+      "holds": true
+    },
+    {
+      "behaviour": "legacy/www/modules/setup/company.php § validation POST (lignes 16-27)",
+      "cases": [
+        "début vide, fin valide → seul « obligatoires » (null >= chaîne faux en PHP, '' >= chaîne faux en JS)",
+        "fin vide → les deux messages",
+        "les deux vides → les deux messages",
+        "début = fin → refus",
+        "début > fin → refus",
+        "concaténation par espace dans l'ordre Legacy"
+      ],
+      "holds": true
+    },
+    {
+      "behaviour": "legacy/www/modules/setup/company.php § enregistrement UPDATE/INSERT + audit_log",
+      "cases": [
+        "ligne existante : name inchangé",
+        "ligne absente : name = 'Ketchup Compta'",
+        "audit UPDATE/company/1/'Company settings updated'/user_id",
+        "échec de validation : aucune écriture"
+      ],
+      "holds": true
+    },
+    {
+      "behaviour": "legacy/www/modules/setup/company.php § libellés et messages mot pour mot",
+      "cases": [
+        "titre « Paramétrage de la Société », onglet « Paramétrage Société »",
+        "4 libellés de devises",
+        "« Début exercice * », « Fin exercice * », « Enregistrer »",
+        "succès « Paramètres de la société enregistrés. »"
+      ],
+      "holds": true
+    },
+    {
+      "behaviour": "legacy/www/dashboard.php § bloc Exercice (format_date)",
+      "cases": [
+        "dates présentes → JJ/MM/AAAA - JJ/MM/AAAA",
+        "pas de ligne → « Non configuré »",
+        "dates vides impossibles (colonnes NOT NULL)"
+      ],
+      "holds": true
+    }
+  ],
+  "findings": []
+}
