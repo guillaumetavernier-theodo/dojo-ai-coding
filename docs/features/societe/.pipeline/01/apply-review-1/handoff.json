@@ -1,0 +1,44 @@
+{
+  "findingsFrom": "docs/features/societe/.pipeline/01/code-review-1/handoff.json",
+  "verdicts": [
+    {
+      "finding": 0,
+      "severity": "nit",
+      "verdict": "fixed"
+    },
+    {
+      "finding": 1,
+      "severity": "major",
+      "verdict": "fixed"
+    },
+    {
+      "finding": 2,
+      "severity": "major",
+      "verdict": "fixed"
+    },
+    {
+      "finding": 3,
+      "severity": "minor",
+      "verdict": "fixed"
+    },
+    {
+      "finding": 4,
+      "severity": "nit",
+      "verdict": "fixed"
+    },
+    {
+      "finding": 5,
+      "severity": "nit",
+      "verdict": "fixed"
+    },
+    {
+      "finding": 6,
+      "severity": "nit",
+      "verdict": "fixed"
+    }
+  ],
+  "checks": {
+    "command": "npm --prefix modern run check",
+    "green": true
+  }
+}
