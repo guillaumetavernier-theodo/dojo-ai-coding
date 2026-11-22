@@ -1,0 +1,100 @@
+{
+  "bundle": "tmp/factory/review/ticket-societe-01.bundle.md",
+  "reviewers": [
+    {
+      "reviewer": "review-quality",
+      "files": 9,
+      "reviewed": 9
+    },
+    {
+      "reviewer": "review-security-bugs",
+      "files": 9,
+      "reviewed": 9
+    },
+    {
+      "reviewer": "review-tests",
+      "files": 9,
+      "reviewed": 9
+    }
+  ],
+  "findings": [
+    {
+      "severity": "nit",
+      "category": "tests",
+      "file": "modern/src/app/(app)/admin/societe/page.test.tsx",
+      "line": 40,
+      "rule": null,
+      "finding": "La boucle `for` sur des paires `[name, value]`, avec une regex construite à la volée, rend les assertions sur les deux champs date plus difficiles à lire que le composant qu'elles couvrent.",
+      "fix": "Écrire deux assertions explicites, une par champ, ou un `it.each` nommé (`pré-remplit %s avec %s`).",
+      "reviewer": "review-tests"
+    },
+    {
+      "severity": "major",
+      "category": "tests",
+      "file": "modern/src/lib/company.test.ts",
+      "line": 74,
+      "rule": null,
+      "finding": "La valeur attendue est recalculée avec l'expression même du code (`new Date().getFullYear()`). Si `getCompanyOrDefaults()` renvoyait en dur `2026-01-01` / `2026-12-31` (les dates du seed), le test passerait toute l'année 2026 et ne casserait qu'au 1er janvier 2027, sans lien avec un changement de code.",
+      "fix": "Figer l'horloge : `vi.useFakeTimers(); vi.setSystemTime(new Date(\"2031-06-15T12:00:00Z\"))` (puis `vi.useRealTimers()` en `afterEach`), et attendre des littéraux `\"2031-01-01\"` / `\"2031-12-31\"`.",
+      "automatable": "grep sur `src/**/*.test.ts` : `new Date\\(\\)` hors `vi.setSystemTime`",
+      "reviewer": "review-tests"
+    },
+    {
+      "severity": "major",
+      "category": "tests",
+      "file": "modern/src/lib/company.test.ts",
+      "line": 137,
+      "rule": null,
+      "finding": "Aucun scénario n'atteint la branche `catch`/`ROLLBACK` de `saveCompany` (company.ts:107-110), alors que le ticket exige l'upsert et l'audit dans une même transaction. Si on retire `BEGIN`/`ROLLBACK` et que l'insertion dans `audit_log` échoue (table absente, contrainte), la ligne `company` reste modifiée sans trace d'audit, et toute la suite reste verte.",
+      "fix": "Ajouter un test : `db.exec(\"DROP TABLE audit_log\")`, puis `expect(() => saveCompany(input, 7)).toThrow()` et `expect(companyRow(db)).toEqual(before)` pour prouver que la mise à jour est annulée.",
+      "reviewer": "review-tests"
+    },
+    {
+      "severity": "minor",
+      "category": "tests",
+      "file": "modern/src/lib/company.test.ts",
+      "line": 177,
+      "rule": null,
+      "finding": "Le titre annonce l'enregistrement et le message de succès, mais le test vérifie aussi le format de l'exercice affiché sur le tableau de bord (`01/01/2027 - 31/12/2027`, critère 14). Si ce format casse, l'échec porte le nom d'un test d'enregistrement.",
+      "fix": "Sortir l'assertion `formatFiscalYear(getCompany())` dans un test à part : `affiche sur le tableau de bord l'exercice qui vient d'être enregistré`.",
+      "reviewer": "review-tests"
+    },
+    {
+      "severity": "nit",
+      "category": "tests",
+      "file": "modern/src/lib/company.test.ts",
+      "line": 124,
+      "rule": null,
+      "finding": "Le test ne vérifie que `ok: false`, alors que le résultat exact est connu (`errors: [ERROR_CURRENCY]`, saisie conservée). Le message affiché pour une devise refusée n'est vérifié nulle part.",
+      "fix": "`expect(result).toEqual({ ok: false, errors: [ERROR_CURRENCY], values: { ...valid, currency: \"JPY\" } })`.",
+      "reviewer": "review-tests"
+    },
+    {
+      "severity": "nit",
+      "category": "tests",
+      "file": "modern/src/lib/company.test.ts",
+      "line": 165,
+      "rule": null,
+      "finding": "Dans le cas de création, `toHaveLength(1)` ne vérifie pas le contenu de la ligne d'audit (dont `user_id: 1`), contrairement au test de mise à jour qui l'épingle entièrement.",
+      "fix": "`expect(auditRows(db)).toEqual([{ user_id: 1, action: \"UPDATE\", entity: \"company\", entity_id: 1, details: \"Company settings updated\" }])`.",
+      "reviewer": "review-tests"
+    },
+    {
+      "severity": "nit",
+      "category": "architecture",
+      "file": "modern/src/lib/company.ts",
+      "line": 126,
+      "rule": "modern/README.md § Carte du squelette",
+      "finding": "`formatDate` est un utilitaire de date générique (le `format_date` du legacy sert aussi aux écritures et au tableau de bord) exporté depuis `company.ts`, dont le nom désigne la société ; aucun autre fichier ne l'importe. Chaque fichier de `lib/` de la carte du squelette porte un seul concept, nommé par le fichier.",
+      "fix": "Retirer l'`export` de `formatDate` tant que seul `formatFiscalYear` l'utilise ; quand une autre page métier en aura besoin, le déplacer dans un fichier `lib/date.ts`.",
+      "automatable": "knip (unused exports) sur modern/src/lib/**",
+      "reviewer": "review-quality"
+    }
+  ],
+  "counts": {
+    "blocking": 0,
+    "major": 2,
+    "minor": 1,
+    "nit": 4
+  }
+}
