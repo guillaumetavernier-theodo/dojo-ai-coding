@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
-import { loginAction, type LoginState } from "./actions";
+import { type LoginState, loginAction } from "./actions";
 
 const initialState: LoginState = {};
 

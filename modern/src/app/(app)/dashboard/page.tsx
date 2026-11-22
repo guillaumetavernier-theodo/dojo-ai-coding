@@ -7,9 +7,9 @@ export default function DashboardPage() {
         <span className="text-5xl">🍅</span>
         <h1 className="mt-4 text-2xl font-bold">Bienvenue dans Ketchup Compta</h1>
         <p className="mx-auto mt-3 max-w-md text-gray-500">
-          Le squelette de l&apos;application moderne est en place : connexion, navigation
-          et structure. La migration des pages métier commence ici — choisis une page
-          dans le menu et lance-toi avec Claude Code.
+          Le squelette de l&apos;application moderne est en place : connexion, navigation et
+          structure. La migration des pages métier commence ici — choisis une page dans le menu et
+          lance-toi avec Claude Code.
         </p>
         <Link
           href="/admin/societe"
