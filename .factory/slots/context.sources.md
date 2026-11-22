@@ -1,0 +1,4 @@
+- `{{harness.contextFile}}`: the conventions, the layout and what not to touch.
+- `CONTEXT.md`: the glossary of the accounting domain, with the terms to avoid.
+- `modern/README.md`: the target app's stack and the patterns a migrated page follows.
+- `legacy/`: the PHP app being migrated, the reference behaviour. Read it, never change it.

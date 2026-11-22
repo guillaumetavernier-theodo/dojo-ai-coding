@@ -2,13 +2,7 @@
  * Page « à migrer ». Chaque page métier du legacy a ici un emplacement déjà
  * routé et relié à la navigation : il ne reste qu'à le remplir avec Claude Code.
  */
-export default function StubPage({
-  title,
-  legacyPath,
-}: {
-  title: string;
-  legacyPath: string;
-}) {
+export default function StubPage({ title, legacyPath }: { title: string; legacyPath: string }) {
   return (
     <div>
       <h1 className="text-2xl font-bold">{title}</h1>

@@ -1,7 +1,7 @@
-import { cookies } from "next/headers";
 import { createHash } from "node:crypto";
+import { cookies } from "next/headers";
 import { getDb } from "@/lib/db";
-import { signSession, verifySession, type Session } from "@/lib/session";
+import { type Session, signSession, verifySession } from "@/lib/session";
 
 const COOKIE = "session";
 
@@ -11,7 +11,7 @@ const COOKIE = "session";
  * (Volontairement faible : c'est le hash hérité, pas un exemple à suivre.)
  */
 function hashPassword(password: string): string {
-  return createHash("md5").update("legacy" + password).digest("hex");
+  return createHash("md5").update(`legacy${password}`).digest("hex");
 }
 
 type UserRow = { id: number; username: string; password_hash: string };

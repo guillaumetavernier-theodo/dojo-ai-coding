@@ -1,0 +1,5 @@
+#!/bin/sh
+# Runs bernard from the source of the clone that .factory/package.json links, so changes to it apply live.
+# It goes through node_modules/@theodo/bernard, which a worktree shares with the main checkout (see worktree.setup).
+dir="$(dirname "$(readlink -f "$0")")"
+exec node "$(readlink -f "$dir/../node_modules/@theodo/bernard")/packages/cli/src/bin.ts" "$@"

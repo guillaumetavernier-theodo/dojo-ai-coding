@@ -14,9 +14,7 @@ export default function HomePage() {
         <div className="text-center">
           <span className="text-5xl">🍅</span>
           <h1 className="mt-3 text-3xl font-bold tracking-tight">Ketchup Compta</h1>
-          <p className="mt-2 text-gray-500">
-            Votre comptabilité, simplifiée — version moderne
-          </p>
+          <p className="mt-2 text-gray-500">Votre comptabilité, simplifiée — version moderne</p>
         </div>
 
         <Link
@@ -32,10 +30,7 @@ export default function HomePage() {
           </h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {features.map((f) => (
-              <div
-                key={f.title}
-                className="rounded-xl border border-gray-100 bg-gray-50 p-4"
-              >
+              <div key={f.title} className="rounded-xl border border-gray-100 bg-gray-50 p-4">
                 <p className="font-semibold text-tomato-700">{f.title}</p>
                 <p className="mt-1 text-sm text-gray-500">{f.desc}</p>
               </div>
