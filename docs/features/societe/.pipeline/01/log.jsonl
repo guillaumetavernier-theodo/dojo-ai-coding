@@ -13,3 +13,4 @@
 {"at":"2026-11-22T22:13:44.262Z","kind":"event","event":{"type":"questions.answered","answers":{"ci-or-override":"Just apply the checks in local\n"}}}
 {"at":"2026-11-22T22:42:46.338Z","kind":"crash","step":"pull-request","attempt":2,"error":"the session wrote nothing for 15 min","usage":{"durationMs":1735583}}
 {"at":"2026-11-22T23:30:25.394Z","kind":"crash","step":"pull-request","attempt":3,"error":"the session wrote nothing for 15 min","usage":{"durationMs":2856312}}
+{"at":"2026-11-23T01:53:48.367Z","kind":"crash","step":"pull-request","attempt":4,"error":"the session wrote nothing for 15 min","usage":{"durationMs":8600419}}
