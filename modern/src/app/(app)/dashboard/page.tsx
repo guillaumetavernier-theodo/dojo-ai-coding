@@ -1,8 +1,15 @@
 import Link from "next/link";
+import { formatFiscalYear, getCompany } from "@/lib/company";
+
+export const dynamic = "force-dynamic";
 
 export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-2xl">
+      <div className="mb-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-500">Exercice</h2>
+        <p className="mt-2 text-lg font-semibold">{formatFiscalYear(getCompany())}</p>
+      </div>
       <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-sm">
         <span className="text-5xl">🍅</span>
         <h1 className="mt-4 text-2xl font-bold">Bienvenue dans Ketchup Compta</h1>

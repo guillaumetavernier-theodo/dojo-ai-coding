@@ -1,0 +1,19 @@
+{
+  "findingsFrom": "docs/features/societe/.pipeline/01/code-review-2/handoff.json",
+  "verdicts": [
+    {
+      "finding": 0,
+      "severity": "major",
+      "verdict": "fixed"
+    },
+    {
+      "finding": 1,
+      "severity": "nit",
+      "verdict": "fixed"
+    }
+  ],
+  "checks": {
+    "command": "npm --prefix modern run check",
+    "green": true
+  }
+}

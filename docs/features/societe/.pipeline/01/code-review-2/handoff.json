@@ -1,0 +1,48 @@
+{
+  "bundle": "tmp/factory/review/ticket-societe-01.bundle.md",
+  "reviewers": [
+    {
+      "reviewer": "review-quality",
+      "files": 9,
+      "reviewed": 9
+    },
+    {
+      "reviewer": "review-security-bugs",
+      "files": 9,
+      "reviewed": 9
+    },
+    {
+      "reviewer": "review-tests",
+      "files": 9,
+      "reviewed": 9
+    }
+  ],
+  "findings": [
+    {
+      "severity": "major",
+      "category": "tests",
+      "file": "modern/src/app/(app)/admin/societe/page.test.tsx",
+      "line": 26,
+      "rule": null,
+      "finding": "Les critères 9 et 10 exigent que la page *affiche* le message de succès ou d'erreur et *conserve la saisie*, mais aucun scénario ne rend `CompanyForm` avec un état renvoyé par l'action : les branches `state.error &&` et `state.success &&` (CompanyForm.tsx:27-36) et le remontage par `key` (l.39) ne sont jamais atteints. Si l'on supprime le bloc `{state.error && …}` ou qu'on lit `initial` au lieu de `state.values`, toute la suite reste verte alors que l'utilisateur ne voit plus l'erreur et perd sa saisie.",
+      "fix": "Ajouter des tests de rendu de `CompanyForm` avec un état initial non vide (ou en moquant `useActionState` pour renvoyer `{ error: ERROR_DATES_ORDER, values: invalid }` puis `{ success: SUCCESS_MESSAGE, values: valid }`) et vérifier que le message apparaît et que les champs portent `value` de la saisie renvoyée, pas celle de `initial`.",
+      "reviewer": "review-tests"
+    },
+    {
+      "severity": "nit",
+      "category": "quality",
+      "file": "modern/src/lib/company.ts",
+      "line": 23,
+      "rule": null,
+      "finding": "`CompanyInput` est un simple alias de `Company`, dont `currency` est un `string` : la saisie brute et la société validée partagent un type, et le type n'interdit rien. Un appel `saveCompany({ currency: \"JPY\", fiscal_year_start: \"2027-01-01\", fiscal_year_end: \"2027-12-31\" }, 1)` hors de `submitCompany` passe `tsc` et écrit une devise que la validation refuse.",
+      "fix": "Distinguer les deux : `type CurrencyCode = Currency[\"code\"]`, `Company = { currency: CurrencyCode; ... }` pour la valeur validée (paramètre de `saveCompany`, branche `ok: true`), et un type de saisie à champs `string` pour `values` ; ou supprimer l'alias `CompanyInput` s'il doit rester identique.",
+      "reviewer": "review-quality"
+    }
+  ],
+  "counts": {
+    "blocking": 0,
+    "major": 1,
+    "minor": 0,
+    "nit": 1
+  }
+}
